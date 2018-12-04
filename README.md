@@ -8,4 +8,4 @@ Linux based Jenkins deployments.
 
 # Other information:
 
-Currently N/A . Testing,. 
+Currently N/A
