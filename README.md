@@ -9,4 +9,3 @@ Linux based Jenkins deployments.
 # Other information:
 
 Currently N/A
-Just for testing
