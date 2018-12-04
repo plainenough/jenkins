@@ -11,7 +11,7 @@ pipeline {
         sh 'build.py'
       }
     }
-    stage('test') {
+    stage('Test') {
       steps { 
         sh 'build.py'
       }
