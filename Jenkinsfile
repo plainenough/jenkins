@@ -13,12 +13,12 @@ pipeline {
     }
     stage('Test') {
       steps { 
-        sh 'build.py'
+        sh 'python build.py'
       }
     }
     stage('Deploy') {
      steps {
-        sh 'deply.py'
+        sh 'cat /proc/loadavg'
       }
     }
   }
