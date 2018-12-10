@@ -22,10 +22,11 @@ pipeline {
     stage('Cleanup') {
      steps {
         sh 'cat /proc/loadavg'
-       notifyBuild(currentBuild.result)
+       //notifyBuild(currentBuild.result)
       }
     }
   }
+  notifyBuild(currentBuild.result)
 }
 
 //node {
