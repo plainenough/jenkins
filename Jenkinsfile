@@ -3,6 +3,7 @@ pipeline {
   stages {
     stage('Setup'){
       steps {
+        slackSend "Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
         sh '/usr/bin/python setup.py'
       }
     }
