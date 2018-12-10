@@ -19,9 +19,10 @@ pipeline {
         sh 'python build.py'
       }
     }
-    stage('Deploy') {
+    stage('Cleanup') {
      steps {
         sh 'cat /proc/loadavg'
+       notifyBuild(currentBuild.result)
       }
     }
   }
