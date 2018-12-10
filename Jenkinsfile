@@ -35,6 +35,7 @@ pipeline {
     success {
       result = 'SUCCESS'
       notifyBuild(currentBuild.result)
+    }
   }
 }
 
