@@ -1,32 +1,60 @@
 
-node {
-    try {
+pipeline {
+  agent any
+  
+  stages {
+    stage('Setup'){
+      steps {
         notifyBuild('STARTED')
-
-        stage('Prepare code') {
-            sh 'python setup.py'
-        }
-
-        stage('Build') {
-            sh 'python build.py'
-        }
-
-        stage('Testing') {
-            sh 'python test.py'
-        }
-        // @todo add checkpoint
-        stage('Deploy') {
-            echo 'python deploy.py'
-        }
-  } catch (e) {
-    // If there was an exception thrown, the build failed
-    currentBuild.result = "FAILED"
-    throw e
-  } finally {
-    // Success or failure, always send notifications
-    notifyBuild(currentBuild.result)
+            sh '/usr/bin/python setup.py' 
+      }
+    }
+    stage('Build') {
+      steps { 
+        sh 'python build.py'
+      }
+    }
+    stage('Test') {
+      steps { 
+        sh 'python build.py'
+      }
+    }
+    stage('Deploy') {
+     steps {
+        sh 'cat /proc/loadavg'
+      }
+    }
   }
 }
+
+//node {
+//    try {
+//        notifyBuild('STARTED')
+
+//        stage('Prepare code') {
+//            sh 'python setup.py'
+//        }
+//
+//        stage('Build') {
+//            sh 'python build.py'
+//        }
+
+//        stage('Testing') {
+//            sh 'python test.py'
+//        }
+        // @todo add checkpoint
+//        stage('Deploy') {
+//            echo 'python deploy.py'
+//        }
+//  } catch (e) {
+    // If there was an exception thrown, the build failed
+//    currentBuild.result = "FAILED"
+//    throw e
+//  } finally {
+    // Success or failure, always send notifications
+//    notifyBuild(currentBuild.result)
+//  }
+//}
 
 
 def notifyBuild(String buildStatus = 'STARTED') {
