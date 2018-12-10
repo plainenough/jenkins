@@ -53,7 +53,7 @@ def notifyBuild(String buildStatus = 'STARTED') {
   } else if (buildStatus == 'SUCCESSFUL') {
     color = 'GREEN'
     colorCode = '#00FF00'
-    details = """SUCCESS ${subject} (${env.BUILD_URL})"""
+    details = """SUCCESS (${env.BUILD_URL})"""
   } else {
     color = 'RED'
     colorCode = '#FF0000'
