@@ -25,8 +25,8 @@ pipeline {
        //notifyBuild(currentBuild.result)
       }
     }
+    notifyBuild(currentBuild.result)
   }
-  notifyBuild(currentBuild.result)
 }
 
 //node {
