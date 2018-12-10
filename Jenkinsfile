@@ -29,11 +29,11 @@ pipeline {
       echo 'Conclusion phase'
     }
     failure {
-      result = 'failed'
+      //result = 'failed'
       notifyBuild(currentBuild.result)
     }
     success {
-      result = 'SUCCESS'
+      //result = 'SUCCESS'
       notifyBuild(currentBuild.result)
     }
   }
