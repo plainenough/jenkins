@@ -25,8 +25,15 @@ pipeline {
       }
       post {
         always {
+          echo 'Conclusion phase'
+        }
+        failure {
+          result = 'failed'
           notifyBuild(currentBuild.result)
         }
+        success {
+          result = 'SUCCESS'
+          notifyBuild(currentBuild.result)
       }
     }
   }
