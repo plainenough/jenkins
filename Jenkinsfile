@@ -11,12 +11,12 @@ node {
             sh 'python setup.py'
         }
 
-        stage('Staging') {
-            echo 'Deploy Stage'
+        stage('Testing') {
+            sh 'python test.py'
         }
         // @todo add checkpoint
         stage('Deploy') {
-            sh 'python deploy.py'
+            echo 'python deploy.py'
         }
   } catch (e) {
     // If there was an exception thrown, the build failed
