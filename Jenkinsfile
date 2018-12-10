@@ -2,30 +2,37 @@
 pipeline {
   agent any
   
-  stages {
-    stage('Setup'){
-      steps {
-        notifyBuild('STARTED')
-            sh '/usr/bin/python setup.py' 
+  try { 
+    stages {
+      stage('Setup'){
+        steps {
+          notifyBuild('STARTED')
+              sh '/usr/bin/python setup.py' 
+        }
       }
-    }
-    stage('Build') {
-      steps { 
-        sh 'python build.py'
+      stage('Build') {
+        steps { 
+          sh 'python build.py'
+        }
       }
-    }
-    stage('Test') {
-      steps { 
-        sh 'python build.py'
+      stage('Test') {
+        steps { 
+          sh 'python build.py'
+        }
       }
-    }
-    stage('Cleanup') {
-     steps {
-        sh 'cat /proc/loadavg'
+      stage('Cleanup') {
+       steps {
+          sh 'cat /proc/loadavg'
        //notifyBuild(currentBuild.result)
-      }
+        }
+      } catch (e) {
+      // If there was an exception thrown, the build failed
+      currentBuild.result = "FAILED"
+      throw e
+    } finally {
+      // Success or failure, always send notifications
+      notifyBuild(currentBuild.result)
     }
-    notifyBuild(currentBuild.result)
   }
 }
 
