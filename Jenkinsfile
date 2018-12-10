@@ -56,11 +56,11 @@ def notifyBuild(String buildStatus = 'STARTED') {
   } else if (buildStatus == 'SUCCESSFUL') {
     color = 'GREEN'
     colorCode = '#00FF00'
-    def details = """SUCCESS ${subject} (${env.BUILD_URL})"""
+    details = """SUCCESS ${subject} (${env.BUILD_URL})"""
   } else {
     color = 'RED'
     colorCode = '#FF0000'
-    def details = """FAILED: Job ${env.JOB_NAME} ${env.BUILD_NUMBER}
+    details = """FAILED: Job ${env.JOB_NAME} ${env.BUILD_NUMBER}
   Check console output at ${env.BUILD_URL}${env.JOB_NAME} ${env.BUILD_NUMBER}"""
   }
   // Send notifications
