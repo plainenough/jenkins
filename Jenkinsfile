@@ -62,5 +62,5 @@ def notifyBuild(String buildStatus = 'STARTED') {
   Check console output at ${env.BUILD_URL}${env.JOB_NAME} ${env.BUILD_NUMBER}"""
   }
   // Send notifications
-  slackSend (color: colorCode, message: detailsi, channel: channelName)
+  slackSend (color: colorCode, message: details, channel: channelName )
 }
