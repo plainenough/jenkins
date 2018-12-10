@@ -43,7 +43,7 @@ def notifyBuild(String buildStatus = 'STARTED') {
   // Default values
   def colorName = 'RED'
   def colorCode = '#FF0000'
-  def channelName = '#random'
+  def channelName = '#test'
   def details = """STARTED: Job ${env.JOB_NAME} ${env.BUILD_NUMBER}
   Check console output at ${env.BUILD_URL}${env.JOB_NAME} ${env.BUILD_NUMBER}"""
 
