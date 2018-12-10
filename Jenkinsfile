@@ -21,21 +21,20 @@ pipeline {
     stage('Cleanup') {
      steps {
         sh 'cat /proc/loadavg'
-       //notifyBuild(currentBuild.result)
-      }
-      post {
-        always {
-          echo 'Conclusion phase'
-        }
-        failure {
-          result = 'failed'
-          notifyBuild(currentBuild.result)
-        }
-        success {
-          result = 'SUCCESS'
-          notifyBuild(currentBuild.result)
       }
     }
+  }
+  post {
+    always {
+      echo 'Conclusion phase'
+    }
+    failure {
+      result = 'failed'
+      notifyBuild(currentBuild.result)
+    }
+    success {
+      result = 'SUCCESS'
+      notifyBuild(currentBuild.result)
   }
 }
 
