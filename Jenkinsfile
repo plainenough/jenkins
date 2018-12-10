@@ -2,7 +2,7 @@
 pipeline {
   agent any
   
-  try { 
+  //try { 
     stages {
       stage('Setup'){
         steps {
@@ -25,13 +25,13 @@ pipeline {
           sh 'cat /proc/loadavg'
        //notifyBuild(currentBuild.result)
         }
-      } catch (e) {
+    //  } catch (e) {
       // If there was an exception thrown, the build failed
-      currentBuild.result = "FAILED"
-      throw e
-    } finally {
+    //  currentBuild.result = "FAILED"
+     // throw e
+    //} finally {
       // Success or failure, always send notifications
-      notifyBuild(currentBuild.result)
+     // notifyBuild(currentBuild.result)
     }
   }
 }
