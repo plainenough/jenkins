@@ -8,7 +8,7 @@ node {
         }
 
         stage('Build') {
-            sh 'python setup.py'
+            sh 'python build.py'
         }
 
         stage('Testing') {
