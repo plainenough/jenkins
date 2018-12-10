@@ -15,7 +15,7 @@ pipeline {
     }
     stage('Test') {
       steps { 
-        sh 'python build.py'
+        sh 'python test.py'
       }
     }
     stage('Cleanup') {
