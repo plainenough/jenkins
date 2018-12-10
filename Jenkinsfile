@@ -43,6 +43,7 @@ def notifyBuild(String buildStatus = 'STARTED') {
   // Default values
   def colorName = 'RED'
   def colorCode = '#FF0000'
+  def channelName = '#random'
   def details = """STARTED: Job ${env.JOB_NAME} ${env.BUILD_NUMBER}
   Check console output at ${env.BUILD_URL}${env.JOB_NAME} ${env.BUILD_NUMBER}"""
 
@@ -61,5 +62,5 @@ def notifyBuild(String buildStatus = 'STARTED') {
   Check console output at ${env.BUILD_URL}${env.JOB_NAME} ${env.BUILD_NUMBER}"""
   }
   // Send notifications
-  slackSend (color: colorCode, message: details)
+  slackSend (color: colorCode, message: detailsi, channel: channelName)
 }
