@@ -1,6 +1,6 @@
 # Purpose:
 
-To provide a working example of a very simple deployment pipeline.
+To provide a working example of a very simple deployment pipeline. And integrate with slack.
 
 # Build environment: 
 
