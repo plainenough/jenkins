@@ -55,7 +55,7 @@ def notifyBuild(String buildStatus = 'STARTED') {
   // Default values
   def colorName = 'RED'
   def colorCode = '#FF0000'
-  def channelName = '#test' // This is where you would set your custom channel. 
+  def channelName = '#jenkins_alerts' // This is where you would set your custom channel. 
   def details = """STARTED: Job ${env.JOB_NAME} ${env.BUILD_NUMBER}
   Check console output at ${env.BUILD_URL}${env.JOB_NAME} ${env.BUILD_NUMBER}"""
 
