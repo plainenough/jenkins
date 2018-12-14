@@ -4,13 +4,15 @@ pipeline {
     stage('Setup'){
       steps {
         notifyBuild('STARTED')
+        sh 'echo "Begin setup"'
         // Some example of code here. This section is for the setup steps
         // Like refreshing the AMI stuff so on it is good to break this bit
         // out so that we are able to identify environment based issues.
       }
     }
     stage('Build') {
-      steps { 
+      steps {
+        sh 'echo "Begin build"'
         // Knowing that we have a good build environment is crucial before
         // actually attempting a build. This section should only build an 
         // application and place it "locally' to be tested and should 
@@ -19,6 +21,7 @@ pipeline {
     }
     stage('Test') {
       steps { 
+        sh 'echo "Begin test"'
         // This portion will render test results. We can use this block to 
         // also post those results on tickets, in channels, or via email to
         // stakeholders for the products. 
@@ -26,6 +29,7 @@ pipeline {
     }
     stage('Cleanup') {
      steps {
+        sh 'echo "Begin cleanup"'
         // This cleanup stage should be for tagging all of the correct repos
         // with the jenkins build number, it should also actually deliver the
         // the artifact into the repository for consumption by future jobs. 
