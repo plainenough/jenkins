@@ -54,9 +54,9 @@ spec:
       containers:
         - name: jenkins
           image: derrickwalton/jenkins:1.150.1
-          #env:
-          #  - name: JAVA_OPTS
-          #    value: -Djenkins.install.runSetupWizard=false
+          env:
+            - name: JAVA_OPTS
+              value: -Djenkins.install.runSetupWizard=false
           ports:
             - name: http-port
               containerPort: 8080
