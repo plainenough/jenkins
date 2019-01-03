@@ -11,6 +11,34 @@ spec:
   selector:
     app: jenkins
 ---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jenkins-pv
+  namespace: jenkins-ns
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 5Gi
+  storageClassName: slow
+  hostPath:
+    path: /Users/dwalton/jenkins-pv
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jenkins-pv-claim
+  namespace: jenkins-ns
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: slow
+  volumeName: jenkins-pv
+---
 apiVersion: extensions/v1beta1 
 kind: Deployment
 metadata:
@@ -26,17 +54,19 @@ spec:
       containers:
         - name: jenkins
           image: derrickwalton/jenkins:1.150.1
-          env:
-            - name: JAVA_OPTS
-              value: -Djenkins.install.runSetupWizard=false
+          #env:
+          #  - name: JAVA_OPTS
+          #    value: -Djenkins.install.runSetupWizard=false
           ports:
             - name: http-port
               containerPort: 8080
             - name: jnlp-port
               containerPort: 50000
           volumeMounts:
-            - name: jenkins-home
-              mountPath: /var/jenkins_home
+            - name: jenkins-pv
+              mountPath: /var/lib/jenkins
       volumes:
-        - name: jenkins-home
-          emptyDir: {}
+        - name: jenkins-pv
+          persistentVolumeClaim:
+              claimName: jenkins-pv-claim
+
