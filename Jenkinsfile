@@ -3,6 +3,7 @@ pipeline {
   environment {
     registry = "derrickwalton/jenkins"
     registryCredential = 'dockerhub'
+    dockerImage = ''
   }
   stages {
     stage('Setup'){
@@ -16,10 +17,6 @@ pipeline {
       steps {
         sh 'echo "Begin build"'
         docker.build registry + ":$BUILD_NUMBER"
-        // Knowing that we have a good build environment is crucial before
-        // actually attempting a build. This section should only build an 
-        // application and place it "locally' to be tested and should 
-        // prepare that build to be deployed into a repository of some sort. 
       }
     }
     stage('Test') {
