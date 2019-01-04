@@ -1,18 +1,21 @@
 pipeline {
   agent any
+  environment {
+    registry = "derrickwalton/jenkins"
+    registryCredential = 'dockerhub'
+  }
   stages {
     stage('Setup'){
       steps {
         notifyBuild('STARTED')
         sh 'echo "Begin setup"'
-        // Some example of code here. This section is for the setup steps
-        // Like refreshing the AMI stuff so on it is good to break this bit
-        // out so that we are able to identify environment based issues.
+        git 'https://github.com/plainenough/test-pipelines'
       }
     }
     stage('Build') {
       steps {
         sh 'echo "Begin build"'
+        docker.build registry + ":$BUILD_NUMBER"
         // Knowing that we have a good build environment is crucial before
         // actually attempting a build. This section should only build an 
         // application and place it "locally' to be tested and should 
@@ -30,9 +33,9 @@ pipeline {
     stage('Cleanup') {
      steps {
         sh 'echo "Begin cleanup"'
-        // This cleanup stage should be for tagging all of the correct repos
-        // with the jenkins build number, it should also actually deliver the
-        // the artifact into the repository for consumption by future jobs. 
+        docker.withRegistry( ‘’, registryCredential ) {
+          dockerImage.push()
+        }
       }
     }
   }
