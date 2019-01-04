@@ -16,7 +16,7 @@ pipeline {
     stage('Build') {
       steps {
         sh 'echo "Begin build"'
-        docker.build registry + ":$BUILD_NUMBER"
+        //docker.build registry + ":$BUILD_NUMBER"
       }
     }
     stage('Test') {
@@ -30,9 +30,9 @@ pipeline {
     stage('Cleanup') {
      steps {
         sh 'echo "Begin cleanup"'
-        docker.withRegistry( ‘’, registryCredential ) {
-          dockerImage.push()
-        }
+        //docker.withRegistry( ‘’, registryCredential ) {
+        //  dockerImage.push()
+        //}
       }
     }
   }
