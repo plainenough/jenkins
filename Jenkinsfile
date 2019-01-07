@@ -8,7 +8,7 @@ pipeline {
   stages {
     stage('Setup'){
       steps {
-        git 'https://github.com/plainenough/test-pipeline.git'
+        git 'https://github.com/plainenough/test-pipelines.git'
       }
     }
     stage('Building image'){
