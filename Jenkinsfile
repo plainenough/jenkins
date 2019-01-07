@@ -16,11 +16,9 @@ pipeline {
     stage('Build') {
       steps {
         sh 'echo "Begin build"'
-        script { 
-          docker.build registry  + ":$BUILD_NUMBER"
-          sh 'echo "Build complete"'
-        }
-       sh 'echo "we moved out of the script"'
+        sh '  docker.build registry  + ":$BUILD_NUMBER" '
+        sh 'echo "Build complete"'
+        sh 'echo "we moved out of the script"'
       }
     }
     stage('Test') {
