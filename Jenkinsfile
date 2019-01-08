@@ -17,7 +17,7 @@ pipeline {
       steps {
         sh 'echo "Begin build"'
         script {
-            docker.build registry + ":$BUILD_NUMBER"
+            dockerImage = docker.build registry + ":$BUILD_NUMBER"
         }
         sh 'echo "we moved out of the script"'
       }
