@@ -34,7 +34,7 @@ pipeline {
      steps {
         sh 'echo "Begin cleanup"'
         script {
-          docker.withRegistry( ‘’, registryCredential ) {
+          docker.withRegistry( '', registryCredential ) {
             dockerImage.push()
           }
         }
