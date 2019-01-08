@@ -19,7 +19,7 @@ pipeline {
       steps {
         sh 'echo "Begin build"'
         script {
-            dockerImage = docker.build registry + ":$BUILD_NUMBER"
+            dockerImage = docker.build(registry + ":$BUILD_NUMBER", "--no-cache .")
         }
         sh 'echo "we moved out of the script"'
       }
