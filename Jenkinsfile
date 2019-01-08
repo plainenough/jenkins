@@ -16,8 +16,9 @@ pipeline {
     stage('Build') {
       steps {
         sh 'echo "Begin build"'
-        sh 'docker build -t  derrickwalton/jenkins":$BUILD_NUMBER ./" '
-        sh 'echo "Build complete"'
+        script {
+            docker.build registry + ":$BUILD_NUMBER"
+        }
         sh 'echo "we moved out of the script"'
       }
     }
