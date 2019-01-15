@@ -1,9 +1,9 @@
 pipeline {
   agent { 
-    label 'jenkins-slave-1.1'
+    label 'jenkins-slave'
   }
   environment {
-    registry = "derrickwalton/jenkins"
+    registry = "janedev/jenkins"
     registryCredential = 'dockerhub'
     dockerImage = ''
   }
