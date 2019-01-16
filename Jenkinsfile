@@ -3,9 +3,10 @@ pipeline {
     label 'jenkins-slave'
   }
   environment {
-    registry = "janedev/jenkins"
     registryCredential = 'dockerhub'
-    dockerImage = ''
+    jenkinsMaster = ''
+    linuxSlave = ''
+    windowsSlave = ''
   }
   stages {
     stage('Setup'){
@@ -19,27 +20,21 @@ pipeline {
       steps {
         sh 'echo "Begin build"'
         script {
-            dockerImage = docker.build(registry + ":$BUILD_NUMBER", "--no-cache .")
+            jenkinsMaster = docker.build("derrickwalton/jenkins:$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Master --no-cache .")
+            docker.withRegistry( '', registryCredential ) {
+                jenkinsMaster.push()
+            }
         }
-        sh 'echo "we moved out of the script"'
-      }
-    }
-    stage('Test') {
-      steps { 
-        sh 'echo "Begin test"'
-        // This portion will render test results. We can use this block to 
-        // also post those results on tickets, in channels, or via email to
-        // stakeholders for the products. 
-      }
-    }
-    stage('Cleanup') {
-     steps {
-        sh 'echo "Begin cleanup"'
         script {
-          docker.withRegistry( '', registryCredential ) {
-            dockerImage.push()
-          }
+            linuxSlave = docker.build("derrickwalton/jnlp-slave-linux:$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Slave --no-cache .")
+            docker.withRegistry( '', registryCredential ) {
+                linuxSlave.push()
+            }
         }
+        //script {
+            //windowSlave = docker.build("derrickwalton/jnlp-slave-windows:$BUILD_NUMBER", "--no-cache .")
+        //}
+        sh 'echo "Completed the build and push process."'
       }
     }
   }
