@@ -1,6 +1,5 @@
 pipeline {
   agent { 
-    label 'jenkins-slave'
   }
   environment {
     registryCredential = 'dockerhub'
@@ -20,13 +19,13 @@ pipeline {
       steps {
         sh 'echo "Begin build"'
         script {
-            jenkinsMaster = docker.build("derrickwalton/jenkins:$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Master --no-cache .")
+            jenkinsMaster = docker.build("janedev/jenkins:$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Master --no-cache .")
             docker.withRegistry( '', registryCredential ) {
                 jenkinsMaster.push()
             }
         }
         script {
-            linuxSlave = docker.build("derrickwalton/jnlp-slave-linux:$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Slave --no-cache .")
+            linuxSlave = docker.build("janedev/jnlp-slave-linux:$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Slave --no-cache .")
             docker.withRegistry( '', registryCredential ) {
                 linuxSlave.push()
             }
