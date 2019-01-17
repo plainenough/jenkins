@@ -1,6 +1,4 @@
 pipeline {
-  agent { 
-  }
   environment {
     registryCredential = 'dockerhub'
     jenkinsMaster = ''
