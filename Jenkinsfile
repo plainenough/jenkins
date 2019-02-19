@@ -18,7 +18,7 @@ pipeline {
       steps {
         sh 'echo "Begin build"'
         script {
-            jenkinsMaster = docker.build("janedev/jenkins:$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Master --no-cache .")
+            jenkinsMaster = docker.build("derrickwalton/jenkins:2.150.2+$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Master --no-cache .")
             docker.withRegistry( '', registryCredential ) {
                 jenkinsMaster.push()
             }
