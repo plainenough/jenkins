@@ -20,13 +20,13 @@ pipeline {
       steps {
         sh 'echo "Begin build"'
         script {
-            jenkinsMaster = docker.build("derrickwalton/jenkins:2.150.2+$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Master --no-cache .")
+            jenkinsMaster = docker.build("derrickwalton/jenkins:2.150.$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Master --no-cache .")
             docker.withRegistry( '', registryCredential ) {
                 jenkinsMaster.push()
             }
         }
         script {
-            linuxSlave = docker.build("janedev/jnlp-slave-linux:$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Slave --no-cache .")
+            linuxSlave = docker.build("derrickwalton/jnlp-slave-linux:2.150.$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Slave --no-cache .")
             docker.withRegistry( '', registryCredential ) {
                 linuxSlave.push()
             }
