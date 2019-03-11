@@ -45,7 +45,8 @@ pipeline {
     }
     success {
       //result = 'SUCCESS'
-      notifyBuild(currentBuild.result)
+      notifyBuild(currentBuild.result)i
+      notifyBuild('NOTIFY')
     }
   }
 }
@@ -69,6 +70,11 @@ def notifyBuild(String buildStatus = 'STARTED') {
     color = 'GREEN'
     colorCode = '#2E9022'
     details = """SUCCESS (${env.BUILD_URL})"""
+  } else if (buildStatus == 'NOTIFY') {
+    color = 'GREEN'
+    colorCode = '#2E9022'
+    channelName = '#dev-deployment'
+    details = """ Built ${env.BUILD_NUMBER} in ${env.JOB_NAME} has run (${env.BUILD_URL}/last-changes/)"""
   } else {
     color = 'RED'
     colorCode = '#FF0000'
