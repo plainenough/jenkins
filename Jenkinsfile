@@ -45,7 +45,7 @@ pipeline {
     }
     success {
       //result = 'SUCCESS'
-      notifyBuild(currentBuild.result)i
+      notifyBuild(currentBuild.result)
       notifyBuild('NOTIFY')
     }
   }
