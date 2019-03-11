@@ -17,18 +17,18 @@ pipeline {
     stage('Build') {
       steps {
         sh 'echo "Begin build"'
-        script {
-            jenkinsMaster = docker.build("derrickwalton/jenkins:2.150.$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Master --no-cache .")
-            docker.withRegistry( '', registryCredential ) {
-                jenkinsMaster.push()
-            }
-        }
-        script {
-            linuxSlave = docker.build("derrickwalton/jnlp-slave-linux:2.150.$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Slave --no-cache .")
-            docker.withRegistry( '', registryCredential ) {
-                linuxSlave.push()
-            }
-        }
+        //script {
+        //    jenkinsMaster = docker.build("derrickwalton/jenkins:2.150.$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Master --no-cache .")
+        //    docker.withRegistry( '', registryCredential ) {
+        //        jenkinsMaster.push()
+        //    }
+        //}
+        //script {
+        //    linuxSlave = docker.build("derrickwalton/jnlp-slave-linux:2.150.$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Slave --no-cache .")
+        //    docker.withRegistry( '', registryCredential ) {
+        //        linuxSlave.push()
+        //    }
+        //}
         //script {
             //windowSlave = docker.build("derrickwalton/jnlp-slave-windows:$BUILD_NUMBER", "--no-cache .")
         //}
