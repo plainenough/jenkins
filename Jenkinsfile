@@ -3,6 +3,7 @@ pipeline {
   environment {
     registryCredential = 'dockerhub'
     jenkinsMaster = ''
+    version = "2.164.2-$BUILD_NUMBER"
     linuxSlave = ''
     windowsSlave = ''
   }
@@ -17,18 +18,20 @@ pipeline {
     stage('Build') {
       steps {
         sh 'echo "Begin build"'
-        //script {
-        //    jenkinsMaster = docker.build("derrickwalton/jenkins:2.150.$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Master --no-cache .")
-        //    docker.withRegistry( '', registryCredential ) {
-        //        jenkinsMaster.push()
-        //    }
-        //}
-        //script {
-        //    linuxSlave = docker.build("derrickwalton/jnlp-slave-linux:2.150.$BUILD_NUMBER", "-f ./container/linux/Dockerfile.Slave --no-cache .")
-        //    docker.withRegistry( '', registryCredential ) {
-        //        linuxSlave.push()
-        //    }
-        //}
+        script {
+            masterName = String.format("derrickwalton/jenkins:%s", version)
+            jenkinsMaster = docker.build(masterName, "-f ./container/linux/Dockerfile.Master --no-cache .")
+            docker.withRegistry( '', registryCredential ) {
+                jenkinsMaster.push()
+            }
+        }
+        script {
+           slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
+            linuxSlave = docker.build(slaveName, "-f ./container/linux/Dockerfile.Slave --no-cache .")
+            docker.withRegistry( '', registryCredential ) {
+                linuxSlave.push()
+            }
+        }
         //script {
             //windowSlave = docker.build("derrickwalton/jnlp-slave-windows:$BUILD_NUMBER", "--no-cache .")
         //}
