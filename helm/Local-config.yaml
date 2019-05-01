@@ -9,14 +9,14 @@
 # fullnameOverride:
 
 Master:
-  Name: jenkins-master
-  Image: "janedev/jenkins"
-  ImageTag: "2.150.2-12"
+  Name: master
+  Image: "derrickwalton/jenkins"
+  ImageTag: "2.164.2-31"
   ImagePullPolicy: "Always"
   Component: "jenkins-master"
   UseSecurity: true
   AdminUser: admin
-  JenkinsAdminEmail: user@jane.com
+  JenkinsAdminEmail: user@domain.com
   AdminPassword: "testing123"
   Cpu: "500m"
   Memory: "500Mi"
@@ -43,22 +43,22 @@ Master:
   CustomConfigMap: false
   NodeSelector: {}
   Tolerations: {}
-  #volumes: 
-  #  - name: jenkins-pv
-  #    persistentVolumeClaim:
-  #        claimName: jenkins-pv-claim
-  #mounts:
-  #  - mountpath: /var/jenkins_home
-  #    name: jenkins-pv
+  volumes: 
+    - name: jenkins-pv
+      persistentVolumeClaim:
+          claimName: jenkins-pv-claim
+  mounts:
+    - mountpath: /var/jenkins_home
+      name: jenkins-pv
 
 Agent:
   Enabled: true
-  Image: "janedev/jnlp-slave-linux"
-  ImageTag: "2.150.1-12"
+  Image: "derrickwalton/jnlp-slave-linux"
+  ImageTag: "latest"
   Component: "slave"
   Privileged: false
-  Cpu: "500m"
-  Memory: "256Mi"
+  Cpu: "1000m"
+  Memory: "1024Mi"
   # You may want to change this to true while testing a new image
   AlwaysPullImage: false
   volumes:
@@ -68,8 +68,8 @@ Agent:
   NodeSelector: {}
 
 Persistence:
-  Enabled: false
-  i#ExistingClaim: jenkins-pv-claim
+  Enabled: true
+  ExistingClaim: jenkins-pv-claim
 
 NetworkPolicy:
   # Enable creation of NetworkPolicy resources.
