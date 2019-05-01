@@ -1,5 +1,7 @@
 pipeline {
-  agent any
+  agent {
+    label 'jenkins-slave'
+  }
   environment {
     registryCredential = 'dockerhub'
     jenkinsMaster = ''
