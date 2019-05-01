@@ -26,9 +26,14 @@ pipeline {
             }
         }
         script {
-           slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
+            slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
             linuxSlave = docker.build(slaveName, "-f ./container/linux/Dockerfile.Slave --no-cache .")
-            docker.withRegistry( '', registryCredential ) {
+            docker.withRegistry( '', registryCredential) {
+                linuxSlave.push()
+            }
+            slaveLatest  = String.format("derrickwalton/jnlp-slave-linux:latest")
+            linuxSlave = docker.build(slaveLatest, "-f ./container/linux/Dockerfile.Slave .")
+            docker.withRegistry( '', registryCredential) {
                 linuxSlave.push()
             }
         }
