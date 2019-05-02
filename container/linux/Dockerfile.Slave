@@ -14,6 +14,9 @@ add-apt-repository \
    stable" && \
 apt-get update && \
 apt-get -y install docker-ce && \
-apt-get -y install kubectl
+# Get the kubectl binary.
+curl -LO https://storage.googleapis.com/kubernetes-release/release/$k8sversion/bin/linux/amd64/kubectl && \
+chmod +x ./kubectl && \
+sudo mv ./kubectl /usr/local/bin/kubectl
 COPY ./slaveversion /
 
