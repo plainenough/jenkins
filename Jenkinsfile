@@ -27,6 +27,8 @@ pipeline {
                 jenkinsMaster.push()
             }
         }
+        sh 'echo version >> ./slaveversion'
+        sh 'cat ./slaveversion'
         script {
             slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
             linuxSlave = docker.build(slaveName, "-f ./container/linux/Dockerfile.Slave --no-cache .")
