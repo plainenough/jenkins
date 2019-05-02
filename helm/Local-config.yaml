@@ -57,8 +57,13 @@ Agent:
   ImageTag: "latest"
   Component: "slave"
   Privileged: false
-  Cpu: "1000m"
-  Memory: "1024Mi"
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1024Mi"
+    limits:
+      cpu: "1500m"
+      memory: "2048Mi"
   # You may want to change this to true while testing a new image
   AlwaysPullImage: false
   volumes:
