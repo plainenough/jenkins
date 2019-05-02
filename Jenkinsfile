@@ -13,7 +13,7 @@ pipeline {
     stage('Setup'){
       steps {
         notifyBuild('STARTED')
-        //sh 'echo "CONTAINER VERSION: " && cat ./slaveversion' 
+        sh 'echo "CONTAINER VERSION: " && cat /slaveversion' 
         sh 'echo "Begin setup"'
         git 'https://github.com/plainenough/test-pipelines'
       }
@@ -29,7 +29,6 @@ pipeline {
             }
         }
         sh "echo \"${version}\" > ./slaveversion"
-        //sh 'cat /slaveversion'
         script {
             slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
             linuxSlave = docker.build(slaveName, "-f ./container/linux/Dockerfile.Slave --no-cache .")
