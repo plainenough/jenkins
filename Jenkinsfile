@@ -55,9 +55,9 @@ pipeline {
     }
     success {
       //result = 'SUCCESS'
-      notifyBuild(currentBuild.result)
       lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
       notifyBuild('NOTIFY')
+      notifyBuild(currentBuild.result)
     }
   }
 }
