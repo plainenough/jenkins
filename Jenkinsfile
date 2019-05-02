@@ -13,7 +13,7 @@ pipeline {
     stage('Setup'){
       steps {
         notifyBuild('STARTED')
-        sh 'echo "CONTAINER VERSION: " && cat /slaveversion' 
+        sh 'echo "CONTAINER VERSION: " && cat ./slaveversion' 
         sh 'echo "Begin setup"'
         git 'https://github.com/plainenough/test-pipelines'
       }
