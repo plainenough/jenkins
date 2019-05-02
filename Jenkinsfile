@@ -28,7 +28,7 @@ pipeline {
                 jenkinsMaster.push()
             }
         }
-        sh "echo \"${version}\" >> ./slaveversion"
+        sh "echo \"${version}\" > ./slaveversion"
         sh 'cat ./slaveversion'
         script {
             slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
