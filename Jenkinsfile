@@ -13,6 +13,7 @@ pipeline {
     stage('Setup'){
       steps {
         notifyBuild('STARTED')
+        sh 'echo "CONTAINER VERSION: " && cat /slaveversion' 
         sh 'echo "Begin setup"'
         git 'https://github.com/plainenough/test-pipelines'
       }
@@ -50,7 +51,6 @@ pipeline {
   }
   post {
     failure {
-      //result = 'failed'
       notifyBuild(currentBuild.result)
     }
     success {
@@ -64,7 +64,7 @@ pipeline {
 
 def notifyBuild(String buildStatus = 'STARTED') {
   // build status of null means successful
-  buildStatus =  buildStatus ?: 'SUCCESSFUL'
+  buildStatus =  buildStatus ?: 'SUCCESS'
   
   // Default values
   def colorName = 'RED'
@@ -77,7 +77,7 @@ def notifyBuild(String buildStatus = 'STARTED') {
   if (buildStatus == 'STARTED') {
     color = 'YELLOW'
     colorCode = '#FFFF00'
-  } else if (buildStatus == 'SUCCESSFUL') {
+  } else if (buildStatus == 'SUCCESS') {
     color = 'GREEN'
     colorCode = '#2E9022'
     details = """SUCCESS (${env.BUILD_URL})"""
@@ -96,6 +96,3 @@ def notifyBuild(String buildStatus = 'STARTED') {
   slackSend (color: colorCode, message: details, channel: channelName )
 }
 
-// TODO: Add some Disclaimers and document the pipeline
-// TODO: Add controlled functionality for emailing users
-// TODO: Accommodate the idea of posting to multiple slack channges. 
