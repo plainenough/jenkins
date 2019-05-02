@@ -57,7 +57,7 @@ pipeline {
       lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
       notifyBuild('NOTIFY')
       notifyBuild(currentBuild.result)
-      //sh "kubectl set image deployment/jenkins -n jenkins-ns jenkins=derrickwalton/jenkins:\"${version}\""
+      sh "kubectl set image deployment/jenkins -n jenkins-ns jenkins=derrickwalton/jenkins:\"${version}\""
     }
   }
 }
