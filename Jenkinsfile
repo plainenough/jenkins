@@ -58,9 +58,6 @@ pipeline {
       notifyBuild('NOTIFY')
       notifyBuild(currentBuild.result)
       //sh "kubectl set image deployment/jenkins -n jenkins-ns jenkins=derrickwalton/jenkins:\"${version}\""
-      sh "kubectl config set-cluster minikube --server=\"${JENKINS_URL}\" --insecure-skip-tls-verify=true"
-      sh 'kubectl config set-context minikube --cluster=minikube --user=minikube'
-      sh 'kubectl config use-context minikube'
       sh 'kubectl -n jenkins-ns get pods'
     }
   }
