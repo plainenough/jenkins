@@ -7,15 +7,27 @@ pipeline {
     jenkinsMaster = ''
     version = "2.164.2-$BUILD_NUMBER"
     linuxSlave = ''
+    linuxLatest = ''
     windowsSlave = ''
   }
   stages {
     stage('Setup'){
       steps {
-        notifyBuild('STARTED')
-        sh 'echo "CONTAINER VERSION: " && cat /slaveversion' 
         sh 'echo "Begin setup"'
+        notifyBuild('STARTED')
+        sh 'echo "CONTAINER VERSION: $(cat /slaveversion)"'
         git 'https://github.com/plainenough/test-pipelines'
+        withCredentials([
+          file(credentialsId: 'minikube', variable: 'kubeconfig'),
+          file(credentialsId: 'minikube-client-key', variable: 'clientkey'),
+          file(credentialsId: 'minikube-client-cert', variable: 'clientcert'),
+          file(credentialsId: 'minikube-ca-cert', variable: 'cacert')
+        ]) {
+          sh 'cp $kubeconfig ./kubeconfig'
+          sh 'cp $clientkey ./client.key && chmod 600 ./client.key'
+          sh 'cp $clientcert ./client.crt'
+          sh 'cp $cacert ./ca.crt'
+        }
       }
     }
     stage('Build') {
@@ -25,7 +37,6 @@ pipeline {
             masterName = String.format("derrickwalton/jenkins:%s", version)
             jenkinsMaster = docker.build(masterName, "-f ./container/linux/Dockerfile.Master --no-cache .")
             docker.withRegistry( '', registryCredential ) {
-                jenkinsMaster.push()
             }
         }
         sh "echo \"${version}\" > ./slaveversion"
@@ -33,12 +44,10 @@ pipeline {
             slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
             linuxSlave = docker.build(slaveName, "-f ./container/linux/Dockerfile.Slave --no-cache .")
             docker.withRegistry( '', registryCredential) {
-                linuxSlave.push()
             }
             slaveLatest  = String.format("derrickwalton/jnlp-slave-linux:latest")
-            linuxSlave = docker.build(slaveLatest, "-f ./container/linux/Dockerfile.Slave .")
+            linuxLatest = docker.build(slaveLatest, "-f ./container/linux/Dockerfile.Slave .")
             docker.withRegistry( '', registryCredential) {
-                linuxSlave.push()
             }
         }
         //script {
@@ -54,11 +63,14 @@ pipeline {
     }
     success {
       //result = 'SUCCESS'
+      sh "kubectl --kubeconfig ./kubeconfig get pods"
       lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
       notifyBuild('NOTIFY')
       notifyBuild(currentBuild.result)
-      //sh "kubectl set image deployment/jenkins -n jenkins-ns jenkins=derrickwalton/jenkins:\"${version}\""
-      sh 'kubectl -n jenkins-ns get pods'
+      jenkinsMaster.push()
+      linuxSlave.push()
+      linuxLatest.push()
+      sh "kubectl --kubeconfig ./kubeconfig set image deployment/jenkins -n jenkins-ns jenkins=derrickwalton/jenkins:\"${version}\""
     }
   }
 }
