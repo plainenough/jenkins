@@ -36,19 +36,13 @@ pipeline {
         script {
             masterName = String.format("derrickwalton/jenkins:%s", version)
             jenkinsMaster = docker.build(masterName, "-f ./container/linux/Dockerfile.Master --no-cache .")
-            docker.withRegistry( '', registryCredential ) {
-            }
         }
         sh "echo \"${version}\" > ./slaveversion"
         script {
             slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
             linuxSlave = docker.build(slaveName, "-f ./container/linux/Dockerfile.Slave --no-cache .")
-            docker.withRegistry( '', registryCredential) {
-            }
             slaveLatest  = String.format("derrickwalton/jnlp-slave-linux:latest")
             linuxLatest = docker.build(slaveLatest, "-f ./container/linux/Dockerfile.Slave .")
-            docker.withRegistry( '', registryCredential) {
-            }
         }
         //script {
             //windowSlave = docker.build("derrickwalton/jnlp-slave-windows:$BUILD_NUMBER", "--no-cache .")
@@ -68,10 +62,12 @@ pipeline {
       notifyBuild('NOTIFY')
       notifyBuild(currentBuild.result)
       script {
-        jenkinsMaster.push()
-        linuxSlave.push()
-        linuxLatest.push()
+        docker.withRegistry( '', registryCredential ) {
+          jenkinsMaster.push()
+          linuxSlave.push()
+          linuxLatest.push()
         }
+      }
       sh "kubectl --kubeconfig ./kubeconfig set image deployment/jenkins -n jenkins-ns jenkins=derrickwalton/jenkins:\"${version}\""
     }
   }
