@@ -67,9 +67,11 @@ pipeline {
       lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
       notifyBuild('NOTIFY')
       notifyBuild(currentBuild.result)
-      jenkinsMaster.push()
-      linuxSlave.push()
-      linuxLatest.push()
+      script {
+        jenkinsMaster.push()
+        linuxSlave.push()
+        linuxLatest.push()
+        }
       sh "kubectl --kubeconfig ./kubeconfig set image deployment/jenkins -n jenkins-ns jenkins=derrickwalton/jenkins:\"${version}\""
     }
   }
