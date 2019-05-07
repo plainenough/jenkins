@@ -60,7 +60,6 @@ pipeline {
       sh "kubectl --kubeconfig ./kubeconfig get pods"
       lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
       notifyBuild('NOTIFY')
-      notifyBuild(currentBuild.result)
       script {
         docker.withRegistry( '', registryCredential ) {
           jenkinsMaster.push()
@@ -69,6 +68,7 @@ pipeline {
         }
       }
       sh "kubectl --kubeconfig ./kubeconfig set image deployment/jenkins -n jenkins-ns jenkins=derrickwalton/jenkins:\"${version}\""
+      notifyBuild(currentBuild.result)
     }
   }
 }
