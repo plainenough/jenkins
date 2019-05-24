@@ -1,5 +1,12 @@
 FROM jenkins/jenkins:2.164.3
 
+USER root 
+
+RUN apt-get update
+RUN apt-get install -y nfs-common
+
+USER jenkins
+
 # Distributed Builds plugins
 RUN /usr/local/bin/install-plugins.sh ssh-slaves
 
