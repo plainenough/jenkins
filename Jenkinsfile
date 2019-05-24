@@ -18,15 +18,9 @@ pipeline {
         sh 'echo "CONTAINER VERSION: $(cat /slaveversion)"'
         git 'https://github.com/plainenough/test-pipelines'
         withCredentials([
-          file(credentialsId: 'minikube', variable: 'kubeconfig'),
-          file(credentialsId: 'minikube-client-key', variable: 'clientkey'),
-          file(credentialsId: 'minikube-client-cert', variable: 'clientcert'),
-          file(credentialsId: 'minikube-ca-cert', variable: 'cacert')
+          file(credentialsId: 'jenkins-k8s.yaml', variable: 'kubeconfig')
         ]) {
           sh 'cp $kubeconfig ./kubeconfig'
-          sh 'cp $clientkey ./client.key && chmod 600 ./client.key'
-          sh 'cp $clientcert ./client.crt'
-          sh 'cp $cacert ./ca.crt'
         }
       }
     }
