@@ -18,7 +18,7 @@ pipeline {
         sh 'echo "CONTAINER VERSION: $(cat /slaveversion)"'
         git 'https://github.com/plainenough/test-pipelines'
         withCredentials([
-          file(credentialsId: 'jenkins-k8s.yaml', variable: 'kubeconfig')
+          file(credentialsId: 'k8sconfig', variable: 'kubeconfig')
         ]) {
           sh 'cp $kubeconfig ./kubeconfig'
         }
