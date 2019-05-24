@@ -51,7 +51,7 @@ pipeline {
     }
     success {
       //result = 'SUCCESS'
-      sh "kubectl --kubeconfig ./kubeconfig get pods"
+      sh "kubectl --no-cacerts --kubeconfig ./kubeconfig get pods"
       lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
       notifyBuild('NOTIFY')
       script {
@@ -61,7 +61,7 @@ pipeline {
           linuxLatest.push()
         }
       }
-      sh "kubectl --kubeconfig ./kubeconfig set image deployment/jenkins -n jenkins-ns jenkins=derrickwalton/jenkins:\"${version}\""
+      sh "kubectl --no-cacerts --kubeconfig ./kubeconfig set image deployment/jenkins -n jenkins jenkins=derrickwalton/jenkins:\"${version}\""
       notifyBuild(currentBuild.result)
     }
   }
