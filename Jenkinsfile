@@ -18,15 +18,9 @@ pipeline {
         sh 'echo "CONTAINER VERSION: $(cat /slaveversion)"'
         git 'https://github.com/plainenough/test-pipelines'
         withCredentials([
-          file(credentialsId: 'minikube', variable: 'kubeconfig'),
-          file(credentialsId: 'minikube-client-key', variable: 'clientkey'),
-          file(credentialsId: 'minikube-client-cert', variable: 'clientcert'),
-          file(credentialsId: 'minikube-ca-cert', variable: 'cacert')
+          file(credentialsId: 'k8sconfig', variable: 'kubeconfig')
         ]) {
           sh 'cp $kubeconfig ./kubeconfig'
-          sh 'cp $clientkey ./client.key && chmod 600 ./client.key'
-          sh 'cp $clientcert ./client.crt'
-          sh 'cp $cacert ./ca.crt'
         }
       }
     }
@@ -57,7 +51,7 @@ pipeline {
     }
     success {
       //result = 'SUCCESS'
-      sh "kubectl --kubeconfig ./kubeconfig get pods"
+      sh "kubectl --no-cacerts --kubeconfig ./kubeconfig get pods"
       lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
       notifyBuild('NOTIFY')
       script {
@@ -67,7 +61,7 @@ pipeline {
           linuxLatest.push()
         }
       }
-      sh "kubectl --kubeconfig ./kubeconfig set image deployment/jenkins -n jenkins-ns jenkins=derrickwalton/jenkins:\"${version}\""
+      sh "kubectl --no-cacerts --kubeconfig ./kubeconfig set image deployment/jenkins -n jenkins jenkins=derrickwalton/jenkins:\"${version}\""
       notifyBuild(currentBuild.result)
     }
   }
