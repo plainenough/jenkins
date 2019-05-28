@@ -35,8 +35,6 @@ pipeline {
         script {
             slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
             linuxSlave = docker.build(slaveName, "-f ./container/linux/Dockerfile.Slave --no-cache .")
-            slaveLatest  = String.format("derrickwalton/jnlp-slave-linux:latest")
-            //linuxLatest = docker.build(slaveLatest, "-f ./container/linux/Dockerfile.Slave .")
         }
         //script {
             //windowSlave = docker.build("derrickwalton/jnlp-slave-windows:$BUILD_NUMBER", "--no-cache .")
@@ -60,7 +58,6 @@ pipeline {
           jenkinsMaster.push()
           linuxSlave.push()
           linuxSlave.push('latest')
-          //linuxLatest.push()
         }
       }
       sh "kubectl --kubeconfig ./kubeconfig --insecure-skip-tls-verify set image deployment/jenkins -n jenkins jenkins=derrickwalton/jenkins:\"${version}\""
