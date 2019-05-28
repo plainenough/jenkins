@@ -59,7 +59,7 @@ pipeline {
         docker.withRegistry( '', registryCredential ) {
           jenkinsMaster.push()
           linuxSlave.push()
-          linuxSlave.push(slaveLatest)
+          linuxSlave.push('latest')
           //linuxLatest.push()
         }
       }
