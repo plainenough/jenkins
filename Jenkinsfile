@@ -41,8 +41,12 @@ pipeline {
         //script {
             //windowSlave = docker.build("derrickwalton/jnlp-slave-windows:$BUILD_NUMBER", "--no-cache .")
         //}
-        sh 'echo "Completed the build and push process."'
       }
+    }
+    stage('testing') {
+        steps {
+            sh "kubectl  --kubeconfig ./kubeconfig --insecure-skip-tls-verify get pods"
+        }
     }
   }
   post {
@@ -50,8 +54,6 @@ pipeline {
       notifyBuild(currentBuild.result)
     }
     success {
-      //result = 'SUCCESS'
-      sh "kubectl  --kubeconfig ./kubeconfig --insecure-skip-tls-verify get pods"
       lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
       notifyBuild('NOTIFY')
       script {
@@ -68,17 +70,13 @@ pipeline {
 }
 
 def notifyBuild(String buildStatus = 'STARTED') {
-  // build status of null means successful
   buildStatus =  buildStatus ?: 'SUCCESS'
   
-  // Default values
   def colorName = 'RED'
   def colorCode = '#FF0000'
   def channelName = '#jenkins_alerts' // This is where you would set your custom channel. 
-  def details = """STARTED: Job ${env.JOB_NAME} ${env.BUILD_NUMBER}
-  Check console output at ${env.BUILD_URL}${env.JOB_NAME} ${env.BUILD_NUMBER}"""
+  def details = """STARTED: Job ${env.JOB_NAME} ${env.BUILD_NUMBER}"""
 
-  // Override default values based on build status
   if (buildStatus == 'STARTED') {
     color = 'YELLOW'
     colorCode = '#FFFF00'
@@ -86,11 +84,6 @@ def notifyBuild(String buildStatus = 'STARTED') {
     color = 'GREEN'
     colorCode = '#2E9022'
     details = """SUCCESS (${env.BUILD_URL})"""
-  } else if (buildStatus == 'NOTIFY') {
-    color = 'GREEN'
-    colorCode = '#2E9022'
-    channelName = '#dev-deployment'
-    details = """ Built ${env.BUILD_NUMBER} in ${env.JOB_NAME} has run (${env.BUILD_URL}last-changes/)"""
   } else {
     color = 'RED'
     colorCode = '#FF0000'
