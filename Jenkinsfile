@@ -55,7 +55,6 @@ pipeline {
     }
     success {
       lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
-      notifyBuild('NOTIFY')
       script {
         docker.withRegistry( '', registryCredential ) {
           jenkinsMaster.push()
