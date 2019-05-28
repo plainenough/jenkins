@@ -51,7 +51,7 @@ pipeline {
     }
     success {
       //result = 'SUCCESS'
-      sh "kubectl  --kubeconfig ./kubeconfig -no-cacerts get pods"
+      sh "kubectl  --kubeconfig ./kubeconfig --insecure-skip-tls-verify get pods"
       lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
       notifyBuild('NOTIFY')
       script {
@@ -61,7 +61,7 @@ pipeline {
           linuxLatest.push()
         }
       }
-      sh "kubectl --kubeconfig ./kubeconfig -no-cacerts set image deployment/jenkins -n jenkins jenkins=derrickwalton/jenkins:\"${version}\""
+      sh "kubectl --kubeconfig ./kubeconfig --insecure-skip-tls-verify set image deployment/jenkins -n jenkins jenkins=derrickwalton/jenkins:\"${version}\""
       notifyBuild(currentBuild.result)
     }
   }
