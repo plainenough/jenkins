@@ -46,6 +46,7 @@ jdk-tool \
 jquery-detached \
 jsch \
 junit \
+last-changes \
 ldap \
 lockable-resources \
 mapdb-api \
