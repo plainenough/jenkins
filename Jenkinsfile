@@ -28,11 +28,11 @@ pipeline {
 
     stage('Build') {
       steps {
-        script {
-         label 'Building Master'
+        //script {
+         echo 'Building Master'
          masterName = String.format("derrickwalton/jenkins:%s", version)
          jenkinsMaster = docker.build(masterName, "-f ./container/linux/Dockerfile.Master --no-cache .")
-        }
+        /}
 
         sh "echo \"${version}\" > ./slaveversion"
         script {
