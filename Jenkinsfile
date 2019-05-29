@@ -10,7 +10,6 @@ pipeline {
     linuxLatest = ''
     windowsSlave = ''
   }
-
   stages {
     stage('Setup'){
       steps {
@@ -25,36 +24,29 @@ pipeline {
         }
       }
     }
-
     stage('Build') {
       steps {
-        //script {
-         echo 'Building Master'
-         masterName = String.format("derrickwalton/jenkins:%s", version)
-         jenkinsMaster = docker.build(masterName, "-f ./container/linux/Dockerfile.Master --no-cache .")
-        /}
-
+        sh 'echo "Begin build"'
+        script {
+            masterName = String.format("derrickwalton/jenkins:%s", version)
+            jenkinsMaster = docker.build(masterName, "-f ./container/linux/Dockerfile.Master --no-cache .")
+        }
         sh "echo \"${version}\" > ./slaveversion"
         script {
-          label 'Building Slaves'
-          slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
-          linuxSlave = docker.build(slaveName, "-f ./container/linux/Dockerfile.Slave --no-cache .")
+            slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
+            linuxSlave = docker.build(slaveName, "-f ./container/linux/Dockerfile.Slave --no-cache .")
         }
-
-      //script {
-        //windowSlave = docker.build("derrickwalton/jnlp-slave-windows:$BUILD_NUMBER", "--no-cache .")
-      //}
+        //script {
+            //windowSlave = docker.build("derrickwalton/jnlp-slave-windows:$BUILD_NUMBER", "--no-cache .")
+        //}
       }
     }
-
     stage('testing') {
-      steps {
-        label 'Testing k8s connection'
-        sh "kubectl  --kubeconfig ./kubeconfig --insecure-skip-tls-verify get pods"
-      }
+        steps {
+            sh "kubectl  --kubeconfig ./kubeconfig --insecure-skip-tls-verify get pods"
+        }
     }
   }
-
   post {
     failure {
       notifyBuild(currentBuild.result)
