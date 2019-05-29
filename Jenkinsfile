@@ -25,33 +25,39 @@ pipeline {
       }
     }
     stage('Build') {
+
       steps {
-        label 'Building Master'
-        sh 'echo "Begin build"'
-        script {
+        step {
+          label 'Building Master'
+          sh 'echo "Begin build"'
+          script {
             masterName = String.format("derrickwalton/jenkins:%s", version)
             jenkinsMaster = docker.build(masterName, "-f ./container/linux/Dockerfile.Master --no-cache .")
+          }
         }
-      }
-      steps {
-        label 'Building Slaves'
-        sh "echo \"${version}\" > ./slaveversion"
-        script {
+
+        step {
+          label 'Building Slaves'
+          sh "echo \"${version}\" > ./slaveversion"
+          script {
             slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
             linuxSlave = docker.build(slaveName, "-f ./container/linux/Dockerfile.Slave --no-cache .")
-        }
+          }
         //script {
-            //windowSlave = docker.build("derrickwalton/jnlp-slave-windows:$BUILD_NUMBER", "--no-cache .")
+          //windowSlave = docker.build("derrickwalton/jnlp-slave-windows:$BUILD_NUMBER", "--no-cache .")
         //}
+        }
       }
     }
+
     stage('testing') {
-        steps {
-          label 'Testing k8s connection'
-          sh "kubectl  --kubeconfig ./kubeconfig --insecure-skip-tls-verify get pods"
-        }
+      steps {
+        label 'Testing k8s connection'
+        sh "kubectl  --kubeconfig ./kubeconfig --insecure-skip-tls-verify get pods"
+      }
     }
   }
+
   post {
     failure {
       notifyBuild(currentBuild.result)
