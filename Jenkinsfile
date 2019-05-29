@@ -10,6 +10,7 @@ pipeline {
     linuxLatest = ''
     windowsSlave = ''
   }
+
   stages {
     stage('Setup'){
       steps {
@@ -24,29 +25,25 @@ pipeline {
         }
       }
     }
+
     stage('Build') {
-
       steps {
-        step {
-          label 'Building Master'
-          sh 'echo "Begin build"'
-          script {
-            masterName = String.format("derrickwalton/jenkins:%s", version)
-            jenkinsMaster = docker.build(masterName, "-f ./container/linux/Dockerfile.Master --no-cache .")
-          }
+        script {
+         label 'Building Master'
+         masterName = String.format("derrickwalton/jenkins:%s", version)
+         jenkinsMaster = docker.build(masterName, "-f ./container/linux/Dockerfile.Master --no-cache .")
         }
 
-        step {
+        sh "echo \"${version}\" > ./slaveversion"
+        script {
           label 'Building Slaves'
-          sh "echo \"${version}\" > ./slaveversion"
-          script {
-            slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
-            linuxSlave = docker.build(slaveName, "-f ./container/linux/Dockerfile.Slave --no-cache .")
-          }
-        //script {
-          //windowSlave = docker.build("derrickwalton/jnlp-slave-windows:$BUILD_NUMBER", "--no-cache .")
-        //}
+          slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
+          linuxSlave = docker.build(slaveName, "-f ./container/linux/Dockerfile.Slave --no-cache .")
         }
+
+      //script {
+        //windowSlave = docker.build("derrickwalton/jnlp-slave-windows:$BUILD_NUMBER", "--no-cache .")
+      //}
       }
     }
 
