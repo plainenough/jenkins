@@ -26,11 +26,15 @@ pipeline {
     }
     stage('Build') {
       steps {
+        label 'Building Master'
         sh 'echo "Begin build"'
         script {
             masterName = String.format("derrickwalton/jenkins:%s", version)
             jenkinsMaster = docker.build(masterName, "-f ./container/linux/Dockerfile.Master --no-cache .")
         }
+      }
+      steps {
+        label 'Building Slaves'
         sh "echo \"${version}\" > ./slaveversion"
         script {
             slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
@@ -43,7 +47,8 @@ pipeline {
     }
     stage('testing') {
         steps {
-            sh "kubectl  --kubeconfig ./kubeconfig --insecure-skip-tls-verify get pods"
+          label 'Testing k8s connection'
+          sh "kubectl  --kubeconfig ./kubeconfig --insecure-skip-tls-verify get pods"
         }
     }
   }
