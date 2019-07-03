@@ -2,22 +2,22 @@ pipeline {
   agent {
     label 'jenkins-slave'
   }
-$ 
+
   environment {
     registryCredential = 'dockerhub'
     version = "SDK29-$BUILD_NUMBER"
   }
-$ 
+
   stages {
     stage('Setup') {
       steps {
         checkout scm
       }
     }
-$   
+
     stage('Android BUILDENV Build process') {
-      steps {$ 
-        script {$ 
+      steps {
+        script {
           android = docker.build(
             "janedev/android:" + version,
             "-f ./container/Dockerfile --no-cache ."
@@ -26,7 +26,7 @@ $
       }
     }
   }
-$ 
+
   post {
     failure {
       notifyBuild()
@@ -36,8 +36,9 @@ $
         docker.withRegistry('', registryCredential) {
           android.push()
           android.push('latest')
+        }
+        lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
       }
-      lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
     }
   }
 }
