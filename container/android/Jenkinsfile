@@ -19,8 +19,8 @@ pipeline {
       steps {
         script {
           android = docker.build(
-            "janedev/android:" + version,
-            "-f ./container/Dockerfile --no-cache ."
+            "derrickwalton/android:" + version,
+            "-f ./container/android/Dockerfile --no-cache ."
           )
         }
       }
