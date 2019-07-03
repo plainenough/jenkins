@@ -61,8 +61,8 @@ pipeline {
         }
       }
       sh "kubectl --kubeconfig ./kubeconfig --insecure-skip-tls-verify set image deployment/jenkins -n jenkins jenkins=derrickwalton/jenkins:\"${version}\""
+      sh 'sleep 30'
       notifyBuild(currentBuild.result)
-      sh 'sleep 3; echo done;'
     }
   }
 }
