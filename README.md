@@ -14,4 +14,4 @@ Custom plugins are included in the Dockerfiles. The slave images also install do
 - Add in a testing portion for each container.
 - Clean up the helm chart information and fix the deployment yaml to reflect a fully constructed k8s yaml.
 - Clean repo for only consice files.
-- Create installation instructions for fictitious Fred.
+- Fred is a fucking retard. Use Steve instead.
