@@ -8,7 +8,6 @@ pipeline {
     version = "2.176.3-$BUILD_NUMBER"
     linuxSlave = ''
     linuxLatest = ''
-    windowsSlave = ''
   }
   stages {
     stage('Setup'){
@@ -36,9 +35,6 @@ pipeline {
             slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
             linuxSlave = docker.build(slaveName, "-f ./container/linux/Dockerfile.Slave --no-cache .")
         }
-        //script {
-            //windowSlave = docker.build("derrickwalton/jnlp-slave-windows:$BUILD_NUMBER", "--no-cache .")
-        //}
       }
     }
     stage('testing') {
