@@ -1,6 +1,7 @@
 FROM jenkins/jnlp-slave:latest
 
 USER root
+ENV PYTHONPATH=/home/jenkins/agent/workspace/karmabot
 RUN apt-get update && \
 apt-get -y install apt-transport-https \
      ca-certificates \
