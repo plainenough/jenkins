@@ -1,7 +1,7 @@
 FROM jenkins/jnlp-slave:latest
 
 USER root
-ENV PYTHONPATH=/home/jenkins/agent/workspace/slackbot
+ENV PYTHONPATH=/home/jenkins/agent/workspace/Slackbot
 RUN apt-get update && \
 apt-get -y install apt-transport-https \
      ca-certificates \
