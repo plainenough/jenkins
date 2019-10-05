@@ -1,25 +1,49 @@
-FROM jenkins/jnlp-slave:latest
+FROM ubuntu:bionic
+ENV PYTHONPATH=/home/jenkins/agent/workspace/Slackbot
+USER root
+RUN apt update &&\
+apt upgrade -y
+RUN apt install -y openjdk-11-jdk docker.io curl
+RUN apt install -y python3 python3-pip
+RUN pip3 install slackclient pyyaml pytest
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
+
+ARG VERSION=3.35
+ARG user=jenkins
+ARG group=jenkins
+ARG uid=1000
+ARG gid=1000
+
+RUN groupadd -g ${gid} ${group}
+RUN useradd -c "Jenkins user" -d /home/${user} -u ${uid} -g ${gid} -G docker -m ${user}
+
+ARG AGENT_WORKDIR=/home/${user}/agent
+
+RUN apt update && apt install -y git-lfs
+RUN curl --create-dirs -fsSLo /usr/share/jenkins/agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
+  && chmod 755 /usr/share/jenkins \
+  && chmod 644 /usr/share/jenkins/agent.jar \
+  && ln -sf /usr/share/jenkins/agent.jar /usr/share/jenkins/slave.jar
+COPY jenkins-agent /usr/local/bin/jenkins-agent
+RUN chmod +x /usr/local/bin/jenkins-agent &&\
+    ln -s /usr/local/bin/jenkins-agent /usr/local/bin/jenkins-slave
+USER ${user}
+ENV AGENT_WORKDIR=${AGENT_WORKDIR}
+RUN mkdir /home/${user}/.jenkins && mkdir -p ${AGENT_WORKDIR}
+
+
+VOLUME /home/${user}/.jenkins
+VOLUME ${AGENT_WORKDIR}
+WORKDIR /home/${user}
+
+ARG user=jenkins
 
 USER root
-ENV PYTHONPATH=/home/jenkins/agent/workspace/karmabot
-RUN apt-get update && \
-apt-get -y install apt-transport-https \
-     ca-certificates \
-     curl \
-     gnupg2 \
-     software-properties-common && \
-curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg > /tmp/dkey; apt-key add /tmp/dkey && \
-add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
-   $(lsb_release -cs) \
-   stable" && \
-apt-get update && \
-apt-get -y install docker-ce
-RUN apt-get -y install python3 python3-pip && \
-pip3 install pytest pyyaml requests slackclient pytest
-RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
-echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list && \
-apt-get update && \
-apt-get install kubectl
-COPY ./slaveversion /
 
+ENTRYPOINT ["jenkins-agent"]
+
+LABEL     org.label-schema.name="derrickwalton/jnlp-jenkins-slave" \
+          org.label-schema.description="This is an ubuntu based jnlp slave for jenkins" \
+          org.label-schema.url="https://github.com/plainenough/test-pipelines.git" \
+          org.label-schema.vendor="Tosstalk.com" \
+          org.label-schema.version=${VERSION}
