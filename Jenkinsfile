@@ -14,7 +14,6 @@ pipeline {
       steps {
         sh 'echo "Begin setup"'
         notifyBuild('STARTED')
-        sh 'echo "CONTAINER VERSION: $(cat /slaveversion)"'
         git 'https://github.com/plainenough/jenkins'
         withCredentials([
           file(credentialsId: 'k8sconfig', variable: 'kubeconfig')
@@ -30,7 +29,6 @@ pipeline {
             masterName = String.format("derrickwalton/jenkins:%s", version)
             jenkinsMaster = docker.build(masterName, "-f ./container/linux/Dockerfile.Master --no-cache .")
         }
-        sh "echo \"${version}\" > ./slaveversion"
         script {
             slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
             linuxSlave = docker.build(slaveName, "-f ./container/linux/Dockerfile.Slave --no-cache .")
