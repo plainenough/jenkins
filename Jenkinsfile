@@ -15,7 +15,7 @@ pipeline {
         sh 'echo "Begin setup"'
         notifyBuild('STARTED')
         sh 'echo "CONTAINER VERSION: $(cat /slaveversion)"'
-        git 'https://github.com/plainenough/test-pipelines'
+        git 'https://github.com/plainenough/jenkins'
         withCredentials([
           file(credentialsId: 'k8sconfig', variable: 'kubeconfig')
         ]) {
@@ -87,4 +87,3 @@ def notifyBuild(String buildStatus = 'STARTED') {
   // Send notifications
   slackSend (color: colorCode, message: details, channel: channelName )
 }
-
