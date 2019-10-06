@@ -1,5 +1,4 @@
 FROM ubuntu:bionic
-ENV PYTHONPATH=/home/jenkins/agent/workspace/Slackbot
 USER root
 RUN apt update &&\
 apt upgrade -y
