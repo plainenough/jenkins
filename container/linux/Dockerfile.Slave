@@ -35,14 +35,10 @@ VOLUME /home/${user}/.jenkins
 VOLUME ${AGENT_WORKDIR}
 WORKDIR /home/${user}
 
-ARG user=jenkins
-
-USER root
-
 ENTRYPOINT ["jenkins-agent"]
 
 LABEL     org.label-schema.name="derrickwalton/jnlp-jenkins-slave" \
           org.label-schema.description="This is an ubuntu based jnlp slave for jenkins" \
-          org.label-schema.url="https://github.com/plainenough/test-pipelines.git" \
+          org.label-schema.url="https://github.com/plainenough/jenkins.git" \
           org.label-schema.vendor="Tosstalk.com" \
           org.label-schema.version=${VERSION}

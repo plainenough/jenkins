@@ -91,4 +91,8 @@ workflow-support
 # Scaling
 RUN /usr/local/bin/install-plugins.sh kubernetes
 
-USER jenkins
+LABEL     org.label-schema.name="derrickwalton/jenkins" \
+          org.label-schema.description="Jenkins Master image with a few upgrades" \
+          org.label-schema.url="https://github.com/plainenough/jenkins.git" \
+          org.label-schema.vendor="Tosstalk.com" \
+          org.label-schema.version=${VERSION}
