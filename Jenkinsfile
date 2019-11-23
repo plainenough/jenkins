@@ -5,7 +5,7 @@ pipeline {
   environment {
     registryCredential = 'dockerhub'
     jenkinsMaster = ''
-    version = "2.190.2-$BUILD_NUMBER"
+    version = "2.190.3-$BUILD_NUMBER"
     linuxSlave = ''
     linuxLatest = ''
   }
