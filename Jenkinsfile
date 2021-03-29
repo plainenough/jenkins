@@ -1,4 +1,7 @@
 pipeline {
+  agent { 
+    any
+  }
   environment {
     // You can create environment variables here.
     registryCredential = 'dockerhub'
