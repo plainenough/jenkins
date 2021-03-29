@@ -1,87 +1,58 @@
 pipeline {
-  agent {
-    label 'jenkins-slave'
-  }
   environment {
+    // You can create environment variables here.
     registryCredential = 'dockerhub'
     jenkinsMaster = ''
-    version = "2.190.3-$BUILD_NUMBER"
+    version = "lts"
     linuxSlave = ''
     linuxLatest = ''
   }
+
   stages {
     stage('Setup'){
       steps {
         sh 'echo "Begin setup"'
-        notifyBuild('STARTED')
         git 'https://github.com/plainenough/jenkins'
-        withCredentials([
-          file(credentialsId: 'k8sconfig', variable: 'kubeconfig')
-        ]) {
-          sh 'cp $kubeconfig ./kubeconfig'
+        // You can also create those same variables here. 
+        env.DOCKER_REPO = "derrickwalton" // this should be changed to your username or private repo
+        env.DOCKER_BASE_NAME = "jenkins"
+        env.DOCKER_SLAVE_NAME = "jnlp-slave-linux"
         }
       }
     }
+
     stage('Build') {
       steps {
         sh 'echo "Begin build"'
+        // Build job just leverages the master to build the docker containers as defined by the docker files in the repo.
         script {
-            masterName = String.format("derrickwalton/jenkins:%s", version)
+            masterName = "${env.DOCKER_REPO}/${env.DOCKER_BASE_NAME}:${version}"
             jenkinsMaster = docker.build(masterName, "-f ./container/linux/Dockerfile.Master --no-cache .")
         }
         script {
-            slaveName = String.format("derrickwalton/jnlp-slave-linux:%s", version)
+            slaveName = "${env.DOCKER_REPO}/${env.SOCKER_SLAVE_NAME}:${version}"
             linuxSlave = docker.build(slaveName, "-f ./container/linux/Dockerfile.Slave --no-cache .")
         }
       }
     }
-    stage('testing') {
-        steps {
-            sh "kubectl  --kubeconfig ./kubeconfig --insecure-skip-tls-verify get pods"
-        }
-    }
-  }
-  post {
-    failure {
-      notifyBuild(currentBuild.result)
-    }
-    success {
-      lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
-      script {
-        docker.withRegistry( '', registryCredential ) {
-          jenkinsMaster.push()
-          jenkinsMaster.push('latest')
-          linuxSlave.push()
-          linuxSlave.push('latest')
+
+    stage('Publish') {
+      steps {
+        // Simple usage of a store credential to post to dockerhub.
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            jenkinsMaster.push()
+            jenkinsMaster.push('latest')
+            linuxSlave.push()
+            linuxSlave.push('latest')
+          }
         }
       }
-      sh 'kubectl --kubeconfig ./kubeconfig --insecure-skip-tls-verify set image deployment/jenkins -n jenkins jenkins=derrickwalton/jenkins:\"${version}\" && sleep 120'
-      notifyBuild(currentBuild.result)
+    }
+
+  post {
+    success {
+      lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE',matching: 'LINE'
     }
   }
-}
-
-def notifyBuild(String buildStatus = 'STARTED') {
-  buildStatus =  buildStatus ?: 'SUCCESS'
-  
-  def colorName = 'RED'
-  def colorCode = '#FF0000'
-  def channelName = '#jenkins_alerts' // This is where you would set your custom channel. 
-  def details = """STARTED: Job ${env.JOB_NAME} ${env.BUILD_NUMBER}"""
-
-  if (buildStatus == 'STARTED') {
-    color = 'YELLOW'
-    colorCode = '#FFFF00'
-  } else if (buildStatus == 'SUCCESS') {
-    color = 'GREEN'
-    colorCode = '#2E9022'
-    details = """SUCCESS (${env.BUILD_URL})"""
-  } else {
-    color = 'RED'
-    colorCode = '#FF0000'
-    details = """FAILED: Job ${env.JOB_NAME} ${env.BUILD_NUMBER}
-  Check console output at ${env.BUILD_URL}${env.JOB_NAME} ${env.BUILD_NUMBER}"""
-  }
-  // Send notifications
-  slackSend (color: colorCode, message: details, channel: channelName )
 }
