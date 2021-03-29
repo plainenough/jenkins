@@ -14,7 +14,7 @@ pipeline {
         sh 'echo "Begin setup"'
         git 'https://github.com/plainenough/jenkins'
         // You can also create those same variables here. 
-        env.DOCKER_REPO = "derrickwalton" // this should be changed to your username or private repo
+        env.DOCKER_REPO = "derrickwalton" // This should be changed to your username or private repo
         env.DOCKER_BASE_NAME = "jenkins"
         env.DOCKER_SLAVE_NAME = "jnlp-slave-linux"
         }
@@ -27,11 +27,11 @@ pipeline {
         // Build job just leverages the master to build the docker containers as defined by the docker files in the repo.
         script {
             masterName = "${env.DOCKER_REPO}/${env.DOCKER_BASE_NAME}:${version}"
-            jenkinsMaster = docker.build(masterName, "-f ./container/linux/Dockerfile.Master --no-cache .")
+            jenkinsMaster = docker.build(masterName, "-f ./Dockerfile.Master --no-cache .")
         }
         script {
             slaveName = "${env.DOCKER_REPO}/${env.SOCKER_SLAVE_NAME}:${version}"
-            linuxSlave = docker.build(slaveName, "-f ./container/linux/Dockerfile.Slave --no-cache .")
+            linuxSlave = docker.build(slaveName, "-f ./Dockerfile.Slave --no-cache .")
         }
       }
     }
