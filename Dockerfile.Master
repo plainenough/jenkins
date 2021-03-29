@@ -3,7 +3,7 @@ FROM jenkins/jenkins:lts
 USER root 
 
 RUN apt-get update
-RUN apt-get install -yqq nfs-common
+RUN apt-get install -yqq nfs-common docker
 
 USER jenkins
 
