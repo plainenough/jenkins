@@ -1,9 +1,9 @@
-FROM jenkins/jenkins:2.190.3
+FROM jenkins/jenkins:lts
 
 USER root 
 
 RUN apt-get update
-RUN apt-get install -y nfs-common
+RUN apt-get install -yqq nfs-common
 
 USER jenkins
 
