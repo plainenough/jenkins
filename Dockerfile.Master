@@ -2,8 +2,12 @@ FROM jenkins/jenkins:lts
 
 USER root 
 
-RUN apt-get update
-RUN apt-get install -yqq nfs-common docker
+RUN apt-get update -qq && \
+    apt-get install -yqq apt-transport-https ca-certificates curl gnupg2 software-properties-common && \
+    curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
+    apt-get update -qq && \
+    apt-get install -yqq nfs-common docker-ce
 
 USER jenkins
 
@@ -90,6 +94,8 @@ workflow-support
 
 # Scaling
 RUN /usr/local/bin/install-plugins.sh kubernetes
+
+USER root 
 
 LABEL     org.label-schema.name="derrickwalton/jenkins" \
           org.label-schema.description="Jenkins Master image with a few upgrades" \
