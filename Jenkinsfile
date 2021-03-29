@@ -15,10 +15,11 @@ pipeline {
       steps {
         sh 'echo "Begin setup"'
         git 'https://github.com/plainenough/jenkins'
-        // You can also create those same variables here. 
-        env.DOCKER_REPO = "derrickwalton" // This should be changed to your username or private repo
-        env.DOCKER_BASE_NAME = "jenkins"
-        env.DOCKER_SLAVE_NAME = "jnlp-slave-linux"
+        script {
+          // You can also create those same variables here. 
+          env.DOCKER_REPO = "derrickwalton" // This should be changed to your username or private repo
+          env.DOCKER_BASE_NAME = "jenkins"
+          env.DOCKER_SLAVE_NAME = "jnlp-slave-linux"
         }
       }
     }
