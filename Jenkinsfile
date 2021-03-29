@@ -32,7 +32,7 @@ pipeline {
             jenkinsMaster = docker.build(masterName, "-f ./Dockerfile.Master --no-cache .")
         }
         script {
-            slaveName = "${env.DOCKER_REPO}/${env.SOCKER_SLAVE_NAME}:${version}"
+            slaveName = "${env.DOCKER_REPO}/${env.DOCKER_SLAVE_NAME}:${version}"
             linuxSlave = docker.build(slaveName, "-f ./Dockerfile.Slave --no-cache .")
         }
       }
