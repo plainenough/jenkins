@@ -11,7 +11,7 @@ Linux based Jenkins deployments. This pipeline relies on the jenkins LTS version
 Custom plugins are included in the Dockerfiles. The slave images also install docker and kubectl.
 
 # Run jenkins container
-docker run -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock --name jenkins -t jenkins/jenkins:lts
+docker run -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock -v /home/dwalton/github/personal-jenkins/jenkins_home/:/var/jenkins_home/ --name jenkins -t derrickwalton/jenkins:lts
 
 # TODO:
 - Add in a testing portion for each container.
